@@ -205,8 +205,9 @@ public final class CachedWorld implements ICachedWorld, Helper {
             if (region == null) {
                 continue;
             }
-            int distX = ((region.getX() << 9) + 256) - pruneCenter.getX();
-            int distZ = ((region.getZ() << 9) + 256) - pruneCenter.getZ();
+            // doubles, not ints: past ~46k blocks away distX * distX overflowed, so far away regions could stay in ram forever
+            double distX = ((region.getX() << 9) + 256) - pruneCenter.getX();
+            double distZ = ((region.getZ() << 9) + 256) - pruneCenter.getZ();
             double dist = Math.sqrt(distX * distX + distZ * distZ);
             if (dist > 1024) {
                 logDebug("Deleting cached region from ram");
