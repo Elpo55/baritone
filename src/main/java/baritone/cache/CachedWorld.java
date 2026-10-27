@@ -350,6 +350,11 @@ public final class CachedWorld implements ICachedWorld, Helper {
                 try {
                     ChunkPos pos = toPackQueue.take();
                     LevelChunk chunk = toPackMap.remove(pos);
+                    if (chunk == null) {
+                        // toPackMap has soft values, so the chunk can be collected while it waits in the queue
+                        // and then queueForPacking queues its position a second time
+                        continue;
+                    }
                     if (toPackQueue.size() > Baritone.settings().chunkPackerQueueMaxSize.value) {
                         continue;
                     }
